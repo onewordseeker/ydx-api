@@ -1,0 +1,172 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/update.css">
+    <title>Update</title>
+</head>
+<body>
+    <nav class="navbar">
+        <span class="open-slide">
+            <a href="#">
+                <span>
+                    <a href="#" onclick="openSlideMenu();">
+                        <svg width="30" height="30">
+                            <path d="M0,5 30,5" stroke="#fff" stroke-width="5"/>
+                            <path d="M0,14 30,14" stroke="#fff" stroke-width="5"/>
+                            <path d="M0,23 30,23" stroke="#fff" stroke-width="5"/>
+                        </svg>
+                    </a>
+                </span>
+     </nav>
+     <div id="side-menu" class="side-nav">
+        <a href="#" class="btn-close" onclick="closeSlideMenu();">&times;</a>
+        <a href="#">Profile</a>
+        <a href="#">Privacy</a>
+        <a href="#">Account</a>
+        <a href="#">Transactions</a>
+        <a href="#">Contact</a>
+        <a href="#">Logout</a>
+     </div>
+    <div class="row">
+        <div class="sidebar">
+            <div class="sidebar-heading">
+                Swap Account
+            </div>
+            <div class="menu">
+                <ul>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#">Transactions</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="logout">
+                <a href="#">Logout</a>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="icons">
+                <i class="fa-regular fa-message" style="color: #f4f4f4;"></i>
+                <i class="fa fa-gear" style="color: #f4f4f4;"></i>
+                <i class="fa-regular fa-user" style="color: #f4f4f4;"></i>
+            </div>
+            <div class="separator">
+                <div class="content">
+                    <!-- Content of your div goes here -->
+                </div>
+            </div>
+            <div class="main-body">
+                <div class="left-form">
+                    <div class="form-body">
+                        <div class="form-heading">
+                            Profile Details
+                        </div>
+                        <div class="form">
+                            <form action="
+                            ">
+                            <div class="form-flex">
+                                <label for="userId">Max User ID</label>
+                                <input type="text" id="userId">
+                                <label for="fname">First Name</label>
+                                <input type="text" id="fnale">
+                                <label for="lname">Last Name</label>
+                                <input type="text" id="lname">
+                                <label for="email">Email</label>
+                                <input type="email" id="emial">
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-grid-left">
+                                    <div class="form-flex">
+                                        <label for="address">Address</label>
+                                        <input type="text" id="address">
+                                        <label for="zipcode">Zip Code</label>
+                                        <input type="number" id="zipcode">
+                                    </div>
+                                </div>
+                                <div class="form-grid-right">
+                                    <div class="form-flex">
+                                        <label for="country">Country</label>
+                                        <select name="" id="country">
+                                            <option value=""></option>
+                                            <option value="">Pak</option>
+                                            <option value="">India</option>
+                                        </select>
+                                        <label for="contact">Contact Number</label>
+                                        <input type="number" id="contact">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-flex">
+                                <label for="dob">Date of Birth (YYYY-MM-DD)</label>
+                                <input type="date">
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-grid-left">
+                                    <div class="form-flex">
+                                        <label for="gender">Gender</label>
+                                        <select name="" id="gender">
+                                            <option value=""></option>
+                                            <option value="">Male</option>
+                                            <option value="">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-grid-right">
+                                    <div class="form-flex">
+                                        <label for="id">ID Number</label>
+                                        <input type="number" id="id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-button">
+                                <input type="submit" value="Update">
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-form">
+                    <div class="right-form-body">
+                        <div class="form-heading">
+                            Profile Picture
+                        </div>
+                        <div class="right-form-flex">
+                            <div class="upload">
+                                <label for="passport">Picture</label>
+                                <input type="file" name="" id="passport">
+                                <p>Upload Your Passport</p>
+                            </div>
+                            <div class="upload">
+                                <label for="dashboard">Picture</label>
+                                <input type="file" name="" id="dashboard">
+                                <p>Upload A screenshot of Max Dashboard</p>
+                            </div>
+                            <div class="form-button">
+                                <input type="submit" value="Upload">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <footer>
+        <script
+        src="https://kit.fontawesome.com/8f90b118b8.js"
+        crossorigin="anonymous"
+      ></script>
+        <script>
+            function openSlideMenu(){
+                document.getElementById('side-menu').style.width = '250px';
+                document.getElementById('main').style.marginLeft = '250px';
+            }
+            function closeSlideMenu(){
+                document.getElementById('side-menu').style.width = '0';
+                document.getElementById('main').style.marginLeft = '0';
+            }
+        </script>
+    </footer>
+</body>
+</html>
