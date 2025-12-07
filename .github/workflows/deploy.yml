@@ -28,20 +28,18 @@ jobs:
 
             TARGET_DIR="/home/hamidentify_ydx/htdocs/ydx.hamidentify.dev"
             REPO_URL="git@github.com:onewordseeker/ydx-api.git"
-            SSH_KEY_PATH="$HOME/.ssh/github_ydx_api"
 
             echo "Starting deploy to ${TARGET_DIR}"
 
-            # Use GIT_SSH_COMMAND to force using the correct SSH key
             if [ -d "${TARGET_DIR}/.git" ]; then
               echo "Repo exists — pulling latest"
               cd "${TARGET_DIR}"
-              GIT_SSH_COMMAND="ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no" git fetch origin main --depth=1
-              GIT_SSH_COMMAND="ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no" git reset --hard origin/main
+              git fetch origin main --depth=1
+              git reset --hard origin/main
             else
               echo "Cloning repo fresh"
               rm -rf "${TARGET_DIR}" || true
-              GIT_SSH_COMMAND="ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no" git clone --depth=1 "${REPO_URL}" "${TARGET_DIR}"
+              git clone --depth=1 "${REPO_URL}" "${TARGET_DIR}"
             fi
 
             echo "Deploy complete!"
