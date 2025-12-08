@@ -1,4 +1,4 @@
-name: Auto Deploy to VPS
+name: Auto Deploy Laravel API
 
 on:
   push:
@@ -9,13 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Add VPS to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H 72.62.66.94 >> ~/.ssh/known_hosts
+          echo "✅ Added VPS to known_hosts"
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v0.1.8
@@ -28,22 +29,33 @@ jobs:
 
             TARGET_DIR="/home/hamidentify_ydx/htdocs/ydx.hamidentify.dev"
             REPO_URL="git@github.com:onewordseeker/ydx-api.git"
+            SSH_KEY_PATH="~/.ssh/github_ydx_api"
 
-            echo "Starting deploy to ${TARGET_DIR}"
+            echo "🔹 Starting deploy to ${TARGET_DIR}"
+            echo "🔹 Checking if target directory exists"
 
-            # Clone or pull repo
             if [ -d "${TARGET_DIR}/.git" ]; then
-              echo "Repo exists — pulling latest"
+              echo "📂 Repo exists — pulling latest"
               cd "${TARGET_DIR}"
-              git fetch origin main --depth=1 || true
-              git reset --hard origin/main
+              echo "📌 Current directory: $(pwd)"
+              echo "📌 Git fetch..."
+              GIT_SSH_COMMAND="ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no" git fetch origin main --depth=1 || true
+              echo "📌 Git reset..."
+              GIT_SSH_COMMAND="ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no" git reset --hard origin/main
             else
-              echo "Cloning repo fresh"
+              echo "📂 Cloning repo fresh"
               rm -rf "${TARGET_DIR}" || true
-              git clone --depth=1 "${REPO_URL}" "${TARGET_DIR}"
+              echo "📌 Git clone..."
+              GIT_SSH_COMMAND="ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no" git clone --depth=1 "${REPO_URL}" "${TARGET_DIR}"
             fi
 
-            echo "Deploy complete!"
+            echo "✅ Repo ready at $(pwd)"
+
+            # Debug: list files
+            echo "📂 Listing target directory contents:"
+            ls -lah "${TARGET_DIR}"
+
+            echo "🔹 Deploy complete!"
 
       - name: Telegram Success
         if: success()
