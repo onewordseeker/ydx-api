@@ -1,4 +1,4 @@
-name: Deploy Laravel API
+name: Auto Deploy to VPS
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Add VPS to known_hosts
@@ -17,11 +17,11 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 72.62.66.94 >> ~/.ssh/known_hosts
 
-      - name: Deploy via SSH
+      - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v0.1.8
         with:
-          host: 72.62.66.94
-          username: hamidentify_ydx
+          host: "72.62.66.94"
+          username: "hamidentify_ydx"
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -euo pipefail
@@ -31,15 +31,16 @@ jobs:
 
             echo "Starting deploy to ${TARGET_DIR}"
 
+            # Clone or pull repo
             if [ -d "${TARGET_DIR}/.git" ]; then
               echo "Repo exists — pulling latest"
               cd "${TARGET_DIR}"
-              GIT_SSH_COMMAND="ssh -i ~/github_ydx -o StrictHostKeyChecking=no" git fetch origin main --depth=1
-              GIT_SSH_COMMAND="ssh -i ~/github_ydx -o StrictHostKeyChecking=no" git reset --hard origin/main
+              git fetch origin main --depth=1 || true
+              git reset --hard origin/main
             else
               echo "Cloning repo fresh"
               rm -rf "${TARGET_DIR}" || true
-              GIT_SSH_COMMAND="ssh -i ~/github_ydx -o StrictHostKeyChecking=no" git clone --depth=1 "${REPO_URL}" "${TARGET_DIR}"
+              git clone --depth=1 "${REPO_URL}" "${TARGET_DIR}"
             fi
 
             echo "Deploy complete!"
@@ -47,13 +48,13 @@ jobs:
       - name: Telegram Success
         if: success()
         run: |
-          MSG="✅ Deployment Successful for ${{ github.repository }}"
+          MSG="✅ Deployment Successful for ${{ github.repository }} (branch: ${{ github.ref }})"
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" -d text="$MSG"
 
       - name: Telegram Failed
         if: failure()
         run: |
-          MSG="❌ Deployment Failed for ${{ github.repository }}"
+          MSG="❌ Deployment FAILED for ${{ github.repository }} (branch: ${{ github.ref }})"
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" -d text="$MSG"
