@@ -2,7 +2,7 @@
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
-exit;
+
 define('LARAVEL_START', microtime(true));
 
 /*
