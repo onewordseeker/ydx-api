@@ -213,11 +213,9 @@ function transfer_btc($from, $from_private_key, $to, $amount,) {
          // Step 1: Get UTXOs
       	 $unspentList = [];
       	 $unspentResponse = get_btcUnspentTxns($from)['data'];
-      	 if(isset($unspentResponse->result->data)){
-        	if(isset($unspentResponse->result->data->list)) {
-            	$unspentList = $unspentResponse->result->data->list;
-            }
-        }
+      	 if(isset($unspentResponse->result->txrefs)) {
+            	$unspentList = $unspentResponse->result->txrefs;
+          }
       	
         foreach ($unspentList as $input) {
             // Check if $input is an array
@@ -289,8 +287,8 @@ function get_btc_balance($wallet_address) {
     $data['function_called'] = 'Get BTC Balance';
   	$responnse = ApiRequestsExecute($data)['data'];
   	$balance = 0;
-  	if(isset($responnse->result->data)) {
-      $balance = isset($responnse->result->data->balance) ? $responnse->result->data->balance/100000000 : 0;
+  	if(isset($responnse->result->final_balance)) {
+      $balance = isset($responnse->result->final_balance) ? $responnse->result->final_balance/100000000 : 0;
     }
     return $balance;
 }
