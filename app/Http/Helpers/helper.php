@@ -335,7 +335,7 @@ function get_trc20_transactions($wallet_address) {
     return $transactions;
 }
 function get_erc20_transactions($wallet_address) {
-    $url = 'https://api.etherscan.io/api?module=account&action=tokentx&contract_address='.env('erc20_usdt_contract_address').'&address=' . $wallet_address . '&sort=asc&apikey=RR2CE464DEKSBPPTJ23B6MAAFQFPGSJCZ2';
+    $url = 'https://api.etherscan.io/v2/api?module=account&chainid=1&action=tokentx&contract_address='.env('erc20_usdt_contract_address').'&address=' . $wallet_address . '&sort=asc&apikey=RR2CE464DEKSBPPTJ23B6MAAFQFPGSJCZ2';
     $response = file_get_contents($url);
     $response = json_decode($response);
     if (isset($response->result)) {
@@ -344,7 +344,7 @@ function get_erc20_transactions($wallet_address) {
             if($value->value == 0)
             continue;
             $value->value = $value->tokenDecimal ?  number_format((float)$value->value / ('1'.str_repeat(0, $value->tokenDecimal)), 2, '.', '') :  number_format((float)$value->value, 2, '.', '');
-            $value->timeStamp = date('Y-m-d h:i', $value->timeStamp);
+            $value->timeStamp = date('Y-m-d h:i', strtotime($value->timeStamp));
             $txns[] = $value;
         }
         return $txns;
@@ -353,7 +353,7 @@ function get_erc20_transactions($wallet_address) {
     }
 }
 function get_ethereum_transactions($wallet_address) {
-    $url = 'https://api.etherscan.io/api?module=account&action=txlist&address=' . $wallet_address . '&sort=asc&apikey=RR2CE464DEKSBPPTJ23B6MAAFQFPGSJCZ2';
+    $url = 'https://api.etherscan.io/v2/api?module=account&chainid=1&action=txlist&address=' . $wallet_address . '&sort=asc&apikey=RR2CE464DEKSBPPTJ23B6MAAFQFPGSJCZ2';
     $response = file_get_contents($url);
     $response = json_decode($response);
     if (isset($response->result)) {
@@ -380,15 +380,17 @@ function get_btc_transactions($wallet_address) {
     $data['function_called'] = 'Get BTC Balance';
   	$responnse = ApiRequestsExecute($data)['data'];
   	$transactions = [];
-  	if(isset($responnse->result->data)) {
-      foreach($responnse->result->data->list as $txn) {
+  	if(isset($responnse->transactions)) {
+      foreach($responnse->transactions as $txn) {
         $transactions[] = [
-          'hash' => $txn->hash,
+          'hash' => $txn->tx_hash,
           'blockNumber' => $txn->block_height,
-          'timeStamp' => date('Y-d-m h:i', $txn->block_time),
-          'value' => $txn->inputs_value/100000000,
-          'to' => $txn->outputs[0]->addresses[0],
-          'from' => $txn->inputs[0]->prev_addresses[0]
+          'timeStamp' => date('Y-d-m h:i', strtotime($txn->block_time)),
+          'value' => $txn->value,
+          'to' => $txn->vout[0]->scriptpubkey_address,
+           'from' => $txn->vout[0]->scriptpubkey_address == $wallet_address 
+            ? $txn->vin[0]->prevout->scriptpubkey_address 
+            : $wallet_address
         ];
       }
     }
